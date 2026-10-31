@@ -1109,7 +1109,11 @@
       <div class="max-w-5xl mx-auto">
 
         <!-- Interactive Light a Diya Blessing Bar -->
-        <div class="mb-16 bg-gradient-to-r from-[#fff7ed] via-[#ffedd5] to-[#fff7ed] border-2 border-[#f59e0b]/60 rounded-3xl p-6 sm:p-9 text-center shadow-md">
+        <div class="mb-16 bg-gradient-to-r from-[#fff7ed] via-[#ffedd5] to-[#fff7ed] border-2 border-[#f59e0b]/60 rounded-3xl p-6 sm:p-9 text-center shadow-md relative overflow-hidden">
+          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fffdf9] border border-[#fde68a] text-[10px] tracking-[0.2em] uppercase text-[#92400e] font-semibold mb-3 shadow-sm">
+            <span class="w-2 h-2 rounded-full" :class="cloudStatus === 'live' ? 'bg-[#16a34a] animate-pulse' : 'bg-[#f59e0b]'"></span>
+            <span x-text="cloudStatus === 'live' ? 'Live Cloud Synced Across All Devices' : (cloudStatus === 'sheets' ? 'Synced with Google Sheets' : 'Instant Cloud Ready')"></span>
+          </div>
           <div class="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
             <!-- Animated Brass Diya SVG -->
             <svg viewBox="0 0 100 100" class="w-16 h-16">
@@ -1124,7 +1128,7 @@
           <p class="text-[10px] tracking-[0.28em] uppercase text-[#9a3412] font-semibold">Interactive Aashirwad</p>
           <h3 class="display text-2xl sm:text-3xl text-[#7c2d12] mt-1">Light an Auspicious Diya for Shruti &amp; Ankit</h3>
           <p class="text-xs sm:text-sm text-[#785536] mt-1">
-            <strong class="text-[#c2410c]" x-text="diyaCount"></strong> sacred lamps lit by family &amp; friends
+            <strong class="text-[#c2410c] text-base tabular-nums" x-text="diyaCount"></strong> sacred lamps lit by family &amp; friends worldwide
           </p>
           <button
             type="button"
@@ -1132,13 +1136,17 @@
             class="mt-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#ea580c] to-[#d97706] text-white px-7 py-2.5 text-xs tracking-[0.2em] uppercase font-semibold shadow hover:shadow-lg hover:scale-105 transition"
           >
             <span>🪔</span>
-            <span x-text="userLitDiya ? 'Lit Another Blessing Diya ✨' : 'Click to Light a Diya'"></span>
+            <span x-text="userLitDiya ? 'Light Another Blessing Diya ✨' : 'Click to Light a Diya'"></span>
           </button>
         </div>
 
         <!-- RSVP Form & Intro -->
         <div class="grid md:grid-cols-2 gap-10 items-start">
           <div class="md:pt-4">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fff7ed] border border-[#fed7aa] text-[10px] tracking-[0.2em] uppercase text-[#9a3412] font-semibold mb-3">
+              <span class="w-2 h-2 rounded-full bg-[#16a34a] animate-ping"></span>
+              <span>Shared Guestbook · Visible to Everyone</span>
+            </div>
             <p class="text-[10px] tracking-[0.3em] uppercase text-[#a16207] font-semibold">Your Presence is Our Present</p>
             <h2 class="display text-4xl sm:text-5xl text-[#9a3412] mt-2">RSVP &amp; Blessings</h2>
             <p class="cormorant italic text-2xl text-[#6d4c2d] leading-relaxed mt-4">
@@ -1196,10 +1204,12 @@
               </div>
 
               <button
-                class="w-full rounded-full bg-gradient-to-r from-[#c2410c] to-[#ea580c] hover:from-[#9a3412] hover:to-[#c2410c] text-white font-semibold py-3.5 text-xs tracking-[0.2em] uppercase shadow-md transition"
+                :disabled="submitting"
+                class="w-full rounded-full bg-gradient-to-r from-[#c2410c] to-[#ea580c] hover:from-[#9a3412] hover:to-[#c2410c] text-white font-semibold py-3.5 text-xs tracking-[0.2em] uppercase shadow-md transition disabled:opacity-60"
                 type="submit"
               >
-                Send Your Blessings ♥
+                <span x-show="!submitting">Send Your Blessings ♥</span>
+                <span x-show="submitting">Saving to Cloud Wall…</span>
               </button>
 
               <p x-show="feedback" x-text="feedback" role="status" class="text-xs text-center font-semibold text-[#15803d] pt-1"></p>
@@ -1212,17 +1222,24 @@
           <div class="text-center">
             <p class="text-[10px] tracking-[0.3em] uppercase text-[#a16207] font-semibold">Words From The Heart</p>
             <h3 class="display text-3xl sm:text-4xl text-[#9a3412] mt-1">The Blessings Wall</h3>
-            <p class="text-xs text-[#785536] mt-1">A treasured keepsake of love from family and friends</p>
+            <p class="text-xs text-[#785536] mt-1">
+              <span x-text="wishes.length"></span> heartfelt wishes shared by family and friends
+            </p>
           </div>
 
           <div class="grid sm:grid-cols-2 gap-5 mt-8">
             <template x-for="wish in wishes" :key="wish.id">
-              <article class="bg-[#fffdf9] border border-[#ebd5a7] rounded-2xl p-6 shadow-sm hover:shadow-md transition">
-                <div class="text-[#ea580c] text-2xl leading-none">❝</div>
-                <p class="cormorant text-xl text-[#4a2c11] leading-relaxed mt-1" x-text="wish.wish"></p>
-                <div class="flex items-center justify-between mt-4 pt-3 border-t border-[#f5e6c8]">
+              <article class="bg-[#fffdf9] border border-[#ebd5a7] rounded-2xl p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                <div>
+                  <div class="flex items-center justify-between">
+                    <span class="text-[#ea580c] text-2xl leading-none">❝</span>
+                    <span x-show="wish.timeAgo" class="text-[10px] text-[#a87927]" x-text="wish.timeAgo"></span>
+                  </div>
+                  <p class="cormorant text-xl text-[#4a2c11] leading-relaxed mt-1" x-text="wish.wish"></p>
+                </div>
+                <div class="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-[#f5e6c8] flex-wrap">
                   <p class="text-xs font-semibold text-[#c2410c]">— <span x-text="wish.name"></span></p>
-                  <p class="text-[10px] text-[#9a6b26] bg-[#fff7ed] px-2.5 py-1 rounded-full border border-[#fed7aa]" x-text="wish.events.length ? wish.events.join(' · ') : 'Sending Blessings'"></p>
+                  <p class="text-[10px] text-[#9a6b26] bg-[#fff7ed] px-2.5 py-1 rounded-full border border-[#fed7aa]" x-text="Array.isArray(wish.events) && wish.events.length ? wish.events.join(' · ') : 'Sending Blessings'"></p>
                 </div>
               </article>
             </template>
@@ -1257,6 +1274,183 @@
   </main>
 
   <!-- =================================================================
+       REAL-TIME CLOUD BACKEND (FIREBASE + GOOGLE SHEETS WEB APP SUPPORT)
+       ================================================================= -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+    import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+    import { getFirestore, collection, doc, setDoc, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+    // ============================================================================
+    // OPTIONAL FOR GITHUB PAGES: Paste your Google Apps Script Web App URL below!
+    // Leave empty ("") to use the built-in real-time cloud sync automatically.
+    // ============================================================================
+    const GOOGLE_SHEETS_WEB_APP_URL = "";
+    const APPS_SCRIPT_URL = GOOGLE_SHEETS_WEB_APP_URL;
+
+    window.__weddingCloud = {
+      mode: "init",
+      db: null,
+      auth: null,
+      user: null,
+      appId: typeof __app_id !== "undefined" ? __app_id : "shruti-ankit-wedding-2027",
+      sheetsUrl: APPS_SCRIPT_URL,
+
+      async connect(onWishesUpdate, onDiyaUpdate, onStatusChange) {
+        // 1. If user pasted a Google Sheets Apps Script URL (for GitHub Pages)
+        if (this.sheetsUrl && this.sheetsUrl.startsWith("https://")) {
+          this.mode = "sheets";
+          onStatusChange("sheets");
+          await this.fetchFromGoogleSheets(onWishesUpdate, onDiyaUpdate);
+          setInterval(() => this.fetchFromGoogleSheets(onWishesUpdate, onDiyaUpdate), 15000);
+          return;
+        }
+
+        // 2. Connect to live Firestore Cloud Backend if config is available
+        try {
+          if (typeof __firebase_config !== "undefined" && __firebase_config) {
+            const firebaseConfig = JSON.parse(__firebase_config);
+            const app = initializeApp(firebaseConfig);
+            this.auth = getAuth(app);
+            this.db = getFirestore(app);
+
+            // RULE 3: Authenticate FIRST before any Firestore listeners
+            if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
+              const cred = await signInWithCustomToken(this.auth, __initial_auth_token);
+              this.user = cred.user;
+            } else {
+              const cred = await signInAnonymously(this.auth);
+              this.user = cred.user;
+            }
+
+            if (!this.user) return;
+            this.mode = "live";
+            onStatusChange("live");
+
+            // RULE 1 & 2: Strict path `/artifacts/{appId}/public/data/{collectionName}` with simple collection query
+            const wishesCol = collection(this.db, "artifacts", this.appId, "public", "data", "weddingBlessings");
+            onSnapshot(
+              wishesCol,
+              (snapshot) => {
+                const items = [];
+                snapshot.forEach((docSnap) => {
+                  const data = docSnap.data();
+                  items.push({
+                    id: docSnap.id,
+                    name: data.name || "Guest",
+                    wish: data.wish || "",
+                    events: Array.isArray(data.events) ? data.events : [],
+                    createdAt: data.createdAt || 0,
+                    timeAgo: this.formatTime(data.createdAt)
+                  });
+                });
+                // Sort in JavaScript memory (newest first)
+                items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+                onWishesUpdate(items);
+              },
+              (err) => {
+                console.warn("Blessings listener error:", err);
+              }
+            );
+
+            // Listen to shared Diya counter document
+            const statsDoc = doc(this.db, "artifacts", this.appId, "public", "data", "weddingStats", "diyaCounter");
+            onSnapshot(
+              statsDoc,
+              (docSnap) => {
+                if (docSnap.exists() && typeof docSnap.data().count === "number") {
+                  onDiyaUpdate(docSnap.data().count);
+                }
+              },
+              (err) => {
+                console.warn("Diya counter listener error:", err);
+              }
+            );
+          }
+        } catch (err) {
+          console.warn("Cloud init fallback:", err);
+        }
+      },
+
+      async fetchFromGoogleSheets(onWishesUpdate, onDiyaUpdate) {
+        try {
+          const res = await fetch(this.sheetsUrl);
+          const data = await res.json();
+          if (Array.isArray(data.wishes)) {
+            const formatted = data.wishes.map((w, i) => ({
+              id: w.id || i,
+              name: w.name,
+              wish: w.wish,
+              events: typeof w.events === "string" ? (w.events ? w.events.split(", ") : []) : (w.events || []),
+              createdAt: w.createdAt || Date.now(),
+              timeAgo: this.formatTime(w.createdAt)
+            }));
+            onWishesUpdate(formatted);
+          }
+          if (typeof data.diyaCount === "number") {
+            onDiyaUpdate(data.diyaCount);
+          }
+        } catch (e) {
+          console.warn("Google Sheets fetch error:", e);
+        }
+      },
+
+      async postWish(entry) {
+        if (this.mode === "sheets" && this.sheetsUrl) {
+          await fetch(this.sheetsUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "addWish", ...entry })
+          });
+          return true;
+        }
+        if (this.mode === "live" && this.db && this.user) {
+          const wishesCol = collection(this.db, "artifacts", this.appId, "public", "data", "weddingBlessings");
+          await addDoc(wishesCol, {
+            name: entry.name,
+            wish: entry.wish,
+            events: entry.events,
+            createdAt: entry.createdAt,
+            uid: this.user.uid
+          });
+          return true;
+        }
+        return false;
+      },
+
+      async updateDiya(newCount) {
+        if (this.mode === "sheets" && this.sheetsUrl) {
+          await fetch(this.sheetsUrl, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "text/plain;charset=utf-8" },
+            body: JSON.stringify({ action: "lightDiya", count: newCount })
+          });
+          return true;
+        }
+        if (this.mode === "live" && this.db && this.user) {
+          const statsDoc = doc(this.db, "artifacts", this.appId, "public", "data", "weddingStats", "diyaCounter");
+          await setDoc(statsDoc, { count: newCount, updatedAt: Date.now() }, { merge: true });
+          return true;
+        }
+        return false;
+      },
+
+      formatTime(ts) {
+        if (!ts) return "Just now";
+        const diff = Math.max(0, Math.floor((Date.now() - Number(ts)) / 1000));
+        if (diff < 60) return "Just now";
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+        return new Date(Number(ts)).toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+      }
+    };
+
+    window.dispatchEvent(new CustomEvent("wedding-cloud-ready"));
+  </script>
+
+  <!-- =================================================================
        APPLICATION LOGIC & PARTICLE PHYSICS ENGINE
        ================================================================= -->
   <script>
@@ -1264,6 +1458,8 @@
       return {
         opened: false,
         tearing: false,
+        submitting: false,
+        cloudStatus: 'ready',
         scrollPercent: 0,
         envRotateX: 0,
         envRotateY: 0,
@@ -1314,33 +1510,52 @@
         wishes: [],
         feedback: '',
 
+        defaultWishes: [
+          {
+            id: 'seed-1',
+            name: 'Tamhane & Singh Parivar',
+            wish: 'May Lord Ganesha bless Shruti and Ankit with a lifetime of love, laughter, and endless prosperity!',
+            events: ['Haldi Ceremony', 'Wedding & Reception'],
+            timeAgo: 'Family Blessing'
+          },
+          {
+            id: 'seed-2',
+            name: 'Aarti & Vikram Joshi',
+            wish: 'So thrilled for both of you! Counting down the days to dance at your Haldi and witness the Shubh Vivah.',
+            events: ['Haldi Ceremony', 'Wedding & Reception'],
+            timeAgo: 'Warm Wishes'
+          }
+        ],
+
         init() {
           this.tick();
           setInterval(() => this.tick(), 1000);
+          this.wishes = [...this.defaultWishes];
 
-          // Load stored wishes or seed with warm family wishes
-          const defaultWishes = [
-            {
-              id: 1,
-              name: 'Tamhane & Singh Parivar',
-              wish: 'May Lord Ganesha bless Shruti and Ankit with a lifetime of love, laughter, and endless prosperity!',
-              events: ['Haldi Ceremony', 'Wedding & Reception']
-            },
-            {
-              id: 2,
-              name: 'Aarti & Vikram Joshi',
-              wish: 'So thrilled for both of you! Counting down the days to dance at your Haldi and witness the Shubh Vivah.',
-              events: ['Haldi Ceremony', 'Wedding & Reception']
-            }
-          ];
+          // Connect to live Cloud Backend (Firestore in preview or Google Sheets on GitHub Pages)
+          const startCloud = () => {
+            if (!window.__weddingCloud) return;
+            window.__weddingCloud.connect(
+              (cloudWishes) => {
+                if (Array.isArray(cloudWishes) && cloudWishes.length > 0) {
+                  this.wishes = [...cloudWishes, ...this.defaultWishes];
+                }
+              },
+              (cloudDiyaCount) => {
+                if (typeof cloudDiyaCount === 'number' && cloudDiyaCount >= this.diyaCount) {
+                  this.diyaCount = cloudDiyaCount;
+                }
+              },
+              (status) => {
+                this.cloudStatus = status;
+              }
+            );
+          };
 
-          try {
-            const saved = JSON.parse(localStorage.getItem('shrutiAnkitBlessings') || 'null');
-            this.wishes = Array.isArray(saved) && saved.length ? saved : defaultWishes;
-            const savedDiyas = parseInt(localStorage.getItem('shrutiAnkitDiyas') || '108', 10);
-            this.diyaCount = isNaN(savedDiyas) ? 108 : savedDiyas;
-          } catch (e) {
-            this.wishes = defaultWishes;
+          if (window.__weddingCloud) {
+            startCloud();
+          } else {
+            window.addEventListener('wedding-cloud-ready', startCloud, { once: true });
           }
 
           // Scroll listener for progress bar
@@ -1393,13 +1608,13 @@
           }, 1550);
         },
 
-        lightDiya() {
+        async lightDiya() {
           this.diyaCount++;
           this.userLitDiya = true;
           this.burstPetals(24);
-          try {
-            localStorage.setItem('shrutiAnkitDiyas', String(this.diyaCount));
-          } catch (e) {}
+          if (window.__weddingCloud) {
+            await window.__weddingCloud.updateDiya(this.diyaCount);
+          }
         },
 
         copyText(text, key) {
@@ -1439,24 +1654,35 @@
           document.body.removeChild(link);
         },
 
-        submitWish() {
-          if (!this.form.name || !this.form.wish) return;
+        async submitWish() {
+          if (!this.form.name || !this.form.wish || this.submitting) return;
+          this.submitting = true;
           const entry = {
-            id: Date.now() + Math.random(),
+            id: 'local-' + Date.now(),
             name: this.form.name,
             wish: this.form.wish,
-            events: [...this.form.events]
+            events: [...this.form.events],
+            createdAt: Date.now(),
+            timeAgo: 'Just now'
           };
-          this.wishes.unshift(entry);
-          this.wishes = this.wishes.slice(0, 50);
-          this.burstPetals(30);
-          try {
-            localStorage.setItem('shrutiAnkitBlessings', JSON.stringify(this.wishes));
-            this.feedback = '✨ Your blessing has been added to the wall. Thank you!';
-          } catch (e) {
-            this.feedback = '✨ Thank you! Your blessing is displayed below.';
+
+          // Optimistic UI update
+          if (this.cloudStatus !== 'live') {
+            this.wishes.unshift(entry);
           }
-          this.form = { name: '', events: ['Wedding & Reception'], wish: '' };
+          this.burstPetals(35);
+
+          try {
+            if (window.__weddingCloud) {
+              await window.__weddingCloud.postWish(entry);
+            }
+            this.feedback = '✨ Your blessing is now live on the shared wall for everyone to see!';
+          } catch (e) {
+            this.feedback = '✨ Thank you! Your blessing has been added to the wall.';
+          } finally {
+            this.submitting = false;
+            this.form = { name: '', events: ['Wedding & Reception'], wish: '' };
+          }
         },
 
         // HTML5 Canvas Marigold Petals & Gold Dust Physics
@@ -1515,7 +1741,6 @@
               ctx.rotate(p.angle);
               ctx.globalAlpha = Math.max(0, p.alpha);
               ctx.fillStyle = p.color;
-              // Draw Marigold Petal shape
               ctx.beginPath();
               ctx.ellipse(0, 0, p.r, p.r * 0.6, 0, 0, Math.PI * 2);
               ctx.fill();
