@@ -1,1 +1,1 @@
-# Ankit-Shruti-Wedding & Haldi-
+# Ankit-Shruti-Wedding-
