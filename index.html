@@ -1103,17 +1103,13 @@
     </div>
 
     <!-- ===============================================================
-         INTERACTIVE "LIGHT A DIYA" + RSVP & BLESSINGS WALL (#rsvp)
+         INTERACTIVE "LIGHT A DIYA" + PRIVATE RSVP & BLESSINGS (#rsvp)
          =============================================================== -->
     <section id="rsvp" class="px-4 py-16 sm:py-24">
       <div class="max-w-5xl mx-auto">
 
         <!-- Interactive Light a Diya Blessing Bar -->
         <div class="mb-16 bg-gradient-to-r from-[#fff7ed] via-[#ffedd5] to-[#fff7ed] border-2 border-[#f59e0b]/60 rounded-3xl p-6 sm:p-9 text-center shadow-md relative overflow-hidden">
-          <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#fffdf9] border border-[#fde68a] text-[10px] tracking-[0.2em] uppercase text-[#92400e] font-semibold mb-3 shadow-sm">
-            <span class="w-2 h-2 rounded-full" :class="cloudStatus === 'live' ? 'bg-[#16a34a] animate-pulse' : 'bg-[#f59e0b]'"></span>
-            <span x-text="cloudStatus === 'live' ? 'Live Cloud Synced Across All Devices' : (cloudStatus === 'sheets' ? 'Synced with Google Sheets' : 'Instant Cloud Ready')"></span>
-          </div>
           <div class="w-16 h-16 mx-auto mb-2 flex items-center justify-center">
             <!-- Animated Brass Diya SVG -->
             <svg viewBox="0 0 100 100" class="w-16 h-16">
@@ -1143,10 +1139,6 @@
         <!-- RSVP Form & Intro -->
         <div class="grid md:grid-cols-2 gap-10 items-start">
           <div class="md:pt-4">
-            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#fff7ed] border border-[#fed7aa] text-[10px] tracking-[0.2em] uppercase text-[#9a3412] font-semibold mb-3">
-              <span class="w-2 h-2 rounded-full bg-[#16a34a] animate-ping"></span>
-              <span>Shared Guestbook · Visible to Everyone</span>
-            </div>
             <p class="text-[10px] tracking-[0.3em] uppercase text-[#a16207] font-semibold">Your Presence is Our Present</p>
             <h2 class="display text-4xl sm:text-5xl text-[#9a3412] mt-2">RSVP &amp; Blessings</h2>
             <p class="cormorant italic text-2xl text-[#6d4c2d] leading-relaxed mt-4">
@@ -1161,19 +1153,36 @@
             </div>
           </div>
 
-          <!-- RSVP Card Form -->
+          <!-- Private RSVP Card Form -->
           <div class="bg-[#fffdf9] border-2 border-[#ebd5a7] rounded-3xl p-6 sm:p-8 shadow-lg">
             <form @submit.prevent="submitWish()" class="space-y-4">
-              <div>
-                <label for="guest" class="block text-xs uppercase tracking-wider text-[#6d4c2d] font-semibold mb-1.5">Your Good Name *</label>
-                <input
-                  id="guest"
-                  x-model.trim="form.name"
-                  required
-                  maxlength="70"
-                  placeholder="e.g., Rohan & Priya Deshmukh"
-                  class="w-full rounded-xl border border-[#e5c178] bg-[#fffef9] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#ea580c]"
-                >
+              <div class="grid sm:grid-cols-3 gap-3.5">
+                <div class="sm:col-span-2">
+                  <label for="guest" class="block text-xs uppercase tracking-wider text-[#6d4c2d] font-semibold mb-1.5">Your Good Name *</label>
+                  <input
+                    id="guest"
+                    x-model.trim="form.name"
+                    required
+                    maxlength="70"
+                    placeholder="e.g., Rohan & Priya Deshmukh"
+                    class="w-full rounded-xl border border-[#e5c178] bg-[#fffef9] px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-[#ea580c]"
+                  >
+                </div>
+                <div>
+                  <label for="guestCount" class="block text-xs uppercase tracking-wider text-[#6d4c2d] font-semibold mb-1.5">No. of Guests *</label>
+                  <select
+                    id="guestCount"
+                    x-model="form.guests"
+                    required
+                    class="w-full rounded-xl border border-[#e5c178] bg-[#fffef9] px-3.5 py-3 text-sm outline-none focus:ring-2 focus:ring-[#ea580c]"
+                  >
+                    <option value="1">1 Guest</option>
+                    <option value="2">2 Guests</option>
+                    <option value="3">3 Guests</option>
+                    <option value="4">4 Guests</option>
+                    <option value="5+">5+ Guests</option>
+                  </select>
+                </div>
               </div>
 
               <fieldset>
@@ -1191,11 +1200,10 @@
               </fieldset>
 
               <div>
-                <label for="blessing" class="block text-xs uppercase tracking-wider text-[#6d4c2d] font-semibold mb-1.5">Your Warm Wishes &amp; Aashirwad *</label>
+                <label for="blessing" class="block text-xs uppercase tracking-wider text-[#6d4c2d] font-semibold mb-1.5">Your Warm Wishes &amp; Aashirwad </label>
                 <textarea
                   id="blessing"
                   x-model.trim="form.wish"
-                  required
                   maxlength="400"
                   rows="3"
                   placeholder="Write a heartfelt blessing for Shruti & Ankit..."
@@ -1209,7 +1217,7 @@
                 type="submit"
               >
                 <span x-show="!submitting">Send Your Blessings ♥</span>
-                <span x-show="submitting">Saving to Cloud Wall…</span>
+                <span x-show="submitting">Saving…</span>
               </button>
 
               <p x-show="feedback" x-text="feedback" role="status" class="text-xs text-center font-semibold text-[#15803d] pt-1"></p>
@@ -1217,18 +1225,18 @@
           </div>
         </div>
 
-        <!-- The Blessings Wall -->
+        <!-- The Blessings Wall (Displays ONLY Name & Warm Wishes; Attendance & Guest Count Stay Private) -->
         <div class="max-w-4xl mx-auto mt-16">
           <div class="text-center">
             <p class="text-[10px] tracking-[0.3em] uppercase text-[#a16207] font-semibold">Words From The Heart</p>
             <h3 class="display text-3xl sm:text-4xl text-[#9a3412] mt-1">The Blessings Wall</h3>
             <p class="text-xs text-[#785536] mt-1">
-              <span x-text="wishes.length"></span> heartfelt wishes shared by family and friends
+              <span x-text="wishes.filter(w => w.wish && w.wish.trim()).length"></span> heartfelt wishes shared by family and friends
             </p>
           </div>
 
           <div class="grid sm:grid-cols-2 gap-5 mt-8">
-            <template x-for="wish in wishes" :key="wish.id">
+            <template x-for="wish in wishes.filter(w => w.wish && w.wish.trim())" :key="wish.id">
               <article class="bg-[#fffdf9] border border-[#ebd5a7] rounded-2xl p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between">
                 <div>
                   <div class="flex items-center justify-between">
@@ -1237,9 +1245,9 @@
                   </div>
                   <p class="cormorant text-xl text-[#4a2c11] leading-relaxed mt-1" x-text="wish.wish"></p>
                 </div>
-                <div class="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-[#f5e6c8] flex-wrap">
+                <div class="flex items-center justify-between gap-2 mt-4 pt-3 border-t border-[#f5e6c8]">
                   <p class="text-xs font-semibold text-[#c2410c]">— <span x-text="wish.name"></span></p>
-                  <p class="text-[10px] text-[#9a6b26] bg-[#fff7ed] px-2.5 py-1 rounded-full border border-[#fed7aa]" x-text="Array.isArray(wish.events) && wish.events.length ? wish.events.join(' · ') : 'Sending Blessings'"></p>
+                  <span class="text-[10px] text-[#9a6b26] bg-[#fff7ed] px-2.5 py-0.5 rounded-full border border-[#fed7aa]">Warm Blessing ♥</span>
                 </div>
               </article>
             </template>
@@ -1274,7 +1282,7 @@
   </main>
 
   <!-- =================================================================
-       REAL-TIME CLOUD BACKEND (FIREBASE + GOOGLE SHEETS WEB APP SUPPORT)
+       CLOUD BACKEND (PRIVATE RSVP ATTENDANCE + PUBLIC BLESSINGS WALL)
        ================================================================= -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
@@ -1283,9 +1291,8 @@
 
     // ============================================================================
     // OPTIONAL FOR GITHUB PAGES: Paste your Google Apps Script Web App URL below!
-    // Leave empty ("") to use the built-in real-time cloud sync automatically.
     // ============================================================================
-    const GOOGLE_SHEETS_WEB_APP_URL = "";
+    const GOOGLE_SHEETS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyCgT8gZP1OkrsSLWQ4eM9uASd3eRmIin_G9rSLtBg55t2rf5c0opeF4IigMOAxrdMkdg/exec";
     const APPS_SCRIPT_URL = GOOGLE_SHEETS_WEB_APP_URL;
 
     window.__weddingCloud = {
@@ -1296,17 +1303,14 @@
       appId: typeof __app_id !== "undefined" ? __app_id : "shruti-ankit-wedding-2027",
       sheetsUrl: APPS_SCRIPT_URL,
 
-      async connect(onWishesUpdate, onDiyaUpdate, onStatusChange) {
-        // 1. If user pasted a Google Sheets Apps Script URL (for GitHub Pages)
+      async connect(onWishesUpdate, onDiyaUpdate) {
         if (this.sheetsUrl && this.sheetsUrl.startsWith("https://")) {
           this.mode = "sheets";
-          onStatusChange("sheets");
           await this.fetchFromGoogleSheets(onWishesUpdate, onDiyaUpdate);
           setInterval(() => this.fetchFromGoogleSheets(onWishesUpdate, onDiyaUpdate), 15000);
           return;
         }
 
-        // 2. Connect to live Firestore Cloud Backend if config is available
         try {
           if (typeof __firebase_config !== "undefined" && __firebase_config) {
             const firebaseConfig = JSON.parse(__firebase_config);
@@ -1314,7 +1318,6 @@
             this.auth = getAuth(app);
             this.db = getFirestore(app);
 
-            // RULE 3: Authenticate FIRST before any Firestore listeners
             if (typeof __initial_auth_token !== "undefined" && __initial_auth_token) {
               const cred = await signInWithCustomToken(this.auth, __initial_auth_token);
               this.user = cred.user;
@@ -1325,9 +1328,8 @@
 
             if (!this.user) return;
             this.mode = "live";
-            onStatusChange("live");
 
-            // RULE 1 & 2: Strict path `/artifacts/{appId}/public/data/{collectionName}` with simple collection query
+            // Listen to blessings for The Blessings Wall (only expose name, wish, and timestamp)
             const wishesCol = collection(this.db, "artifacts", this.appId, "public", "data", "weddingBlessings");
             onSnapshot(
               wishesCol,
@@ -1335,16 +1337,16 @@
                 const items = [];
                 snapshot.forEach((docSnap) => {
                   const data = docSnap.data();
-                  items.push({
-                    id: docSnap.id,
-                    name: data.name || "Guest",
-                    wish: data.wish || "",
-                    events: Array.isArray(data.events) ? data.events : [],
-                    createdAt: data.createdAt || 0,
-                    timeAgo: this.formatTime(data.createdAt)
-                  });
+                  if (data.wish && String(data.wish).trim() !== "") {
+                    items.push({
+                      id: docSnap.id,
+                      name: data.name || "Guest",
+                      wish: String(data.wish).trim(),
+                      createdAt: data.createdAt || 0,
+                      timeAgo: this.formatTime(data.createdAt)
+                    });
+                  }
                 });
-                // Sort in JavaScript memory (newest first)
                 items.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
                 onWishesUpdate(items);
               },
@@ -1377,14 +1379,15 @@
           const res = await fetch(this.sheetsUrl);
           const data = await res.json();
           if (Array.isArray(data.wishes)) {
-            const formatted = data.wishes.map((w, i) => ({
-              id: w.id || i,
-              name: w.name,
-              wish: w.wish,
-              events: typeof w.events === "string" ? (w.events ? w.events.split(", ") : []) : (w.events || []),
-              createdAt: w.createdAt || Date.now(),
-              timeAgo: this.formatTime(w.createdAt)
-            }));
+            const formatted = data.wishes
+              .filter((w) => w.wish && String(w.wish).trim() !== "")
+              .map((w, i) => ({
+                id: w.id || "sheet-" + i,
+                name: w.name || "Guest",
+                wish: String(w.wish).trim(),
+                createdAt: w.createdAt || Date.now(),
+                timeAgo: this.formatTime(w.createdAt)
+              }));
             onWishesUpdate(formatted);
           }
           if (typeof data.diyaCount === "number") {
@@ -1409,7 +1412,8 @@
           const wishesCol = collection(this.db, "artifacts", this.appId, "public", "data", "weddingBlessings");
           await addDoc(wishesCol, {
             name: entry.name,
-            wish: entry.wish,
+            guests: entry.guests || "1",
+            wish: entry.wish || "",
             events: entry.events,
             createdAt: entry.createdAt,
             uid: this.user.uid
@@ -1459,7 +1463,6 @@
         opened: false,
         tearing: false,
         submitting: false,
-        cloudStatus: 'ready',
         scrollPercent: 0,
         envRotateX: 0,
         envRotateY: 0,
@@ -1503,6 +1506,7 @@
 
         form: {
           name: '',
+          guests: '1',
           events: ['Wedding & Reception'],
           wish: ''
         },
@@ -1515,14 +1519,12 @@
             id: 'seed-1',
             name: 'Tamhane & Singh Parivar',
             wish: 'May Lord Ganesha bless Shruti and Ankit with a lifetime of love, laughter, and endless prosperity!',
-            events: ['Haldi Ceremony', 'Wedding & Reception'],
             timeAgo: 'Family Blessing'
           },
           {
             id: 'seed-2',
             name: 'Aarti & Vikram Joshi',
-            wish: 'So thrilled for both of you! Counting down the days to dance at your Haldi and witness the Shubh Vivah.',
-            events: ['Haldi Ceremony', 'Wedding & Reception'],
+            wish: 'So thrilled for both of you! Wishing you a joyous journey ahead filled with love and togetherness.',
             timeAgo: 'Warm Wishes'
           }
         ],
@@ -1532,7 +1534,6 @@
           setInterval(() => this.tick(), 1000);
           this.wishes = [...this.defaultWishes];
 
-          // Connect to live Cloud Backend (Firestore in preview or Google Sheets on GitHub Pages)
           const startCloud = () => {
             if (!window.__weddingCloud) return;
             window.__weddingCloud.connect(
@@ -1545,9 +1546,6 @@
                 if (typeof cloudDiyaCount === 'number' && cloudDiyaCount >= this.diyaCount) {
                   this.diyaCount = cloudDiyaCount;
                 }
-              },
-              (status) => {
-                this.cloudStatus = status;
               }
             );
           };
@@ -1655,33 +1653,44 @@
         },
 
         async submitWish() {
-          if (!this.form.name || !this.form.wish || this.submitting) return;
+          if (!this.form.name || this.submitting) return;
           this.submitting = true;
+          const cleanWish = (this.form.wish || '').trim();
           const entry = {
             id: 'local-' + Date.now(),
             name: this.form.name,
-            wish: this.form.wish,
+            guests: this.form.guests || '1',
+            wish: cleanWish,
             events: [...this.form.events],
             createdAt: Date.now(),
             timeAgo: 'Just now'
           };
 
-          // Optimistic UI update
-          if (this.cloudStatus !== 'live') {
-            this.wishes.unshift(entry);
+          // Only add to the public Blessings Wall if the guest wrote a warm wish
+          if (cleanWish && (!window.__weddingCloud || window.__weddingCloud.mode !== 'live')) {
+            this.wishes.unshift({
+              id: entry.id,
+              name: entry.name,
+              wish: entry.wish,
+              createdAt: entry.createdAt,
+              timeAgo: 'Just now'
+            });
           }
+
           this.burstPetals(35);
 
           try {
             if (window.__weddingCloud) {
               await window.__weddingCloud.postWish(entry);
             }
-            this.feedback = '✨ Your blessing is now live on the shared wall for everyone to see!';
+            this.feedback = cleanWish
+              ? '✨ Thank you! Your RSVP is saved privately and your blessing is now on the wall.'
+              : '✨ Thank you! Your RSVP has been privately shared with Shruti & Ankit.';
           } catch (e) {
-            this.feedback = '✨ Thank you! Your blessing has been added to the wall.';
+            this.feedback = '✨ Thank you! Your response has been recorded.';
           } finally {
             this.submitting = false;
-            this.form = { name: '', events: ['Wedding & Reception'], wish: '' };
+            this.form = { name: '', guests: '1', events: ['Wedding & Reception'], wish: '' };
           }
         },
 
